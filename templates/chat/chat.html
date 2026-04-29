@@ -1,30 +1,41 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>멀티에이전트 채팅</title>
-  <link rel="stylesheet" href="{% static 'css/chat.css' %}">
-</head>
-<body>
 
-<div class="chat-wrap">
-  <div class="chat-header">
-    <div id="status-dot"></div>
-    <span>멀티에이전트 채팅</span>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>멀티에이전트 채팅</title>
 
-  <div id="chat-messages">
-    <div class="system-msg">질문을 입력하세요.</div>
-  </div>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+  </head>
 
-  <div class="chat-input">
-    <textarea id="task-input" rows="1" placeholder="질문을 입력하세요..." onkeydown="handleKey(event)"></textarea>
-    <button id="send-btn" onclick="sendRequest()">전송</button>
-  </div>
-</div>
+  <body>
 
-<script src="{% static 'js/chat.js' %}"></script>
-</body>
+    <div class="chat-wrap">
+      <div class="chat-header">
+        <div id="status-dot"></div>
+        <span>멀티에이전트 채팅</span>
+      </div>
+
+      <div id="chat-messages">
+        <div class="system-msg">질문을 입력하세요.</div>
+      </div>
+
+      <div class="chat-input">
+        <textarea id="task-input" name="task" rows="1" placeholder="질문을 입력하세요..." onkeydown="handleKey(event)">
+    </textarea>
+
+        <button id="send-btn" onclick="sendRequest()">전송</button>
+      </div>
+    </div>
+
+    <input type="hidden" id="csrf-token" value="{{ csrf_token }}">
+
+    <!-- JS -->
+    <script src="{% static 'js/chat.js' %}"></script>
+
+  </body>
+
 </html>

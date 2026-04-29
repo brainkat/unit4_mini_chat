@@ -53,12 +53,13 @@ RUNPOT_URL = "https://ruqmxrcp2wvlx8-8000.proxy.runpod.net/"
 API_SECRET_KEY = os.getenv("RUNPOT_API_KEY", "7759e342f8e33b061b680498d30d42b6873a21d1cacd060c0a4258d26eaa94ab")
 
 @csrf_exempt
-def chat_with_agent(request):
+#chat_with_agent
+def api_chat(request):
     if request.method != "POST":
         return JsonResponse({"error": "POST만 허용"}, status=405)
     
     try:
-        data = json.load(request.body)
+        data = json.loads(request.body)
     except json.JSONDecodeError:
         return JsonResponse({'error': "JSON 형식 오류"}, status=400)
     

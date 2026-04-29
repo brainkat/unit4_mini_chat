@@ -49,7 +49,8 @@ async function sendRequest() {
   addTypingIndicator();
 
   try {
-    const res = await fetch('/api/chat/', {
+    const res = await fetch('/chat/api/', {
+      // const res = await fetch('/chat/api/chat/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
