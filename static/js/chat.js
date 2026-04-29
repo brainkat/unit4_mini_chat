@@ -100,3 +100,104 @@ async function sendRequest() {
     document.getElementById('send-btn').disabled = false;
   }
 }
+
+
+// ... 기존 변수 선언부 (CSRF_TOKEN, isLoading 등) 유지
+
+async function sendRequest() {
+  if (isLoading) return;
+  const task = document.getElementById('task-input').value.trim();
+  if (!task) return;
+
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+  document.getElementById('task-input').value = '';
+
+  addMessage(task, 'user');
+  addTypingIndicator();
+
+  // 대화 기록을 담을 변수 (RDS 적재용)
+  let fullAssistantResponse = "";
+
+  try {
+    const res = await fetch('/chat/api/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': CSRF_TOKEN
+      },
+      body: JSON.stringify({
+        task: task,
+        pdf_path: '',
+        interview_history: []
+      })
+    });
+
+    removeTypingIndicator();
+
+    if (!res.ok) {
+      addMessage('오류 ' + res.status, 'assistant');
+      return;
+    }
+
+    const bubble = addMessage('', 'assistant');
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    const container = document.getElementById('chat-messages');
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) {
+        // [추가] 답변이 완료되었을 때 RDS에 저장하는 함수 호출
+        saveChatToRDS(task, fullAssistantResponse);
+        break;
+      }
+
+      const text = decoder.decode(value);
+      for (const line of text.split('\n')) {
+        if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.token) {
+              bubble.textContent += data.token;
+              fullAssistantResponse += data.token; // 답변 누적
+              container.scrollTop = container.scrollHeight;
+            }
+            if (data.error) bubble.textContent += '\n오류: ' + data.error;
+          } catch (e) { }
+        }
+      }
+    }
+  } catch (e) {
+    removeTypingIndicator();
+    addMessage('연결 오류: ' + e.message, 'assistant');
+  } finally {
+    isLoading = false;
+    document.getElementById('send-btn').disabled = false;
+  }
+}
+
+// [추가] RDS 적재를 담당하는 함수
+async function saveChatToRDS(userQuery, assistantReply) {
+  const chatData = {
+    query: userQuery,
+    messages: [
+      { "role": "user", "content": userQuery },
+      { "role": "assistant", "content": assistantReply }
+    ]
+  };
+
+  try {
+    await fetch('/chat/api/save-chat/', { // Django urls.py에 설정할 경로
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': CSRF_TOKEN
+      },
+      body: JSON.stringify(chatData)
+    });
+    console.log("RDS 적재 완료");
+  } catch (e) {
+    console.error("RDS 저장 실패:", e);
+  }
+}
