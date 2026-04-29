@@ -26,5 +26,5 @@ ENV DJANGO_SETTINGS_MODULE=django_docker.settings
 ### above is build setting ###
 
 # 8. 서버 실행 명령 (CMD or ENTRYPOINT 중 택)
-CMD ["gunicorn", "django_docker.wsgi:application", "--config", "gunicorn.conf.py"]
+CMD ["gunicorn", "unit4_mini.wsgi:application", "--config", "gunicorn.conf.py"]
 
