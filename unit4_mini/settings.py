@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['!toupdate', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['13.209.252.21', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -80,22 +80,22 @@ WSGI_APPLICATION = 'unit4_mini.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'simple_chat',
-#         'USER': 'django',
-#         'PASSWORD': os.getenv('LOCAL_RDSDB_PASSWORD'),
-#         'HOST':'!toupdate', #'django-post.crw6u22w4deh.ap-northeast-2.rds.amazonaws.com'
-#         'PORT':'3306'
-#     }
-# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'chatdb',
+        'USER': 'django',
+        'PASSWORD': os.getenv('LOCAL_RDSDB_PASSWORD'),
+        'HOST':'simple-chat.crw6u22w4deh.ap-northeast-2.rds.amazonaws.com', #'django-post.crw6u22w4deh.ap-northeast-2.rds.amazonaws.com'
+        'PORT':'3306'
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 
@@ -141,7 +141,7 @@ STATIC_URL = 'static/'
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-CSRF_TRUSTED_ORIGINS = ['http:/13.209.252.21:8080'] # 43.201.13.152
+CSRF_TRUSTED_ORIGINS = ['http://13.209.252.21:8080'] # 43.201.13.152
 
 # !toupdate STORAGES = {
 #     "default": {
