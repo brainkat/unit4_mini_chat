@@ -18,7 +18,7 @@ COPY . .
 RUN python manage.py collectstatic --noinput
 
 # 6. 환경 변수 설정 (예시)
-ENV DJANGO_SETTINGS_MODULE=django_docker.settings
+ENV DJANGO_SETTINGS_MODULE=unit4_mini.settings
 
 # # 7. 포트 노출 (선택)
 # EXPOSE 8000
